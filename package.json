@@ -10,7 +10,8 @@
   "keywords": [
     "react-native"
   ],
-  "author": "",
+  "homepage": "https://github.com/retizen/react-native-photo-library#readme",
+  "author": "Retizen LTD",
   "license": "MIT",
   "peerDependencies": {
     "react-native": "*"

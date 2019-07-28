@@ -10,7 +10,8 @@
   "dependencies": {
     "react": "16.8.6",
     "react-native": "0.60.4",
-    "react-native-fast-image": "^7.0.2"
+    "react-native-fast-image": "^7.0.2",
+    "react-native-photo-library": "git+ssh://git@github.com/retizen/react-native-photo-library.git"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
