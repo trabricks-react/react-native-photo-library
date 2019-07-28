@@ -1,9 +1,48 @@
 
 package com.retizen.photolibrary;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.facebook.common.logging.FLog;
+import com.facebook.react.bridge.GuardedAsyncTask;
+import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.common.ReactConstants;
+import com.facebook.react.module.annotations.ReactModule;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 
 @ReactModule(name = RNPhotoLibraryModule.NAME)
@@ -170,6 +209,11 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
                 ? params.getArray("mimeTypes")
                 : null;
 
+        boolean orderByAsc = params.hasKey("orderByAsc") ? params.getBoolean("orderByAsc") : false;
+
+        long beginCreated = params.hasKey("beginCreated") ? params.getInt("beginCreated") : 0;
+        long endCreated = params.hasKey("endCreated") ? params.getInt("endCreated") : 0;
+
         new GetMediaTask(
                 getReactApplicationContext(),
                 first,
@@ -177,6 +221,9 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
                 groupName,
                 mimeTypes,
                 assetType,
+                orderByAsc,
+                beginCreated,
+                endCreated,
                 promise)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -193,6 +240,10 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
         private final Promise mPromise;
         private final String mAssetType;
 
+        private final boolean mOrderByAsc;
+        private final long mBeginCreated;
+        private final long mEndCreated;
+
         private GetMediaTask(
                 ReactContext context,
                 int first,
@@ -200,6 +251,9 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
                 @Nullable String groupName,
                 @Nullable ReadableArray mimeTypes,
                 String assetType,
+                boolean orderByAsc,
+                long beginCreated,
+                long endCreated,
                 Promise promise) {
             super(context);
             mContext = context;
@@ -209,6 +263,9 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             mMimeTypes = mimeTypes;
             mPromise = promise;
             mAssetType = assetType;
+            mOrderByAsc = orderByAsc;
+            mBeginCreated = beginCreated;
+            mEndCreated = endCreated;
         }
 
         @Override
@@ -222,6 +279,16 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             if (!TextUtils.isEmpty(mGroupName)) {
                 selection.append(" AND " + SELECTION_BUCKET);
                 selectionArgs.add(mGroupName);
+            }
+
+            if (mBeginCreated > 0) {
+                selection.append(" AND " + Images.Media.DATE_TAKEN + " > ?");
+                selectionArgs.add(String.valueOf(mBeginCreated * 1000d));
+            }
+
+            if (mEndCreated > 0) {
+                selection.append(" AND " + Images.Media.DATE_TAKEN + " < ?");
+                selectionArgs.add(String.valueOf(mEndCreated * 1000d));
             }
 
             if (mAssetType.equals(ASSET_TYPE_PHOTOS)) {
@@ -243,6 +310,9 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
                 return;
             }
 
+            Log.d("MSH", selection.toString());
+            Log.d("MSH", selectionArgs.toString());
+
 
             if (mMimeTypes != null && mMimeTypes.size() > 0) {
                 selection.append(" AND " + Images.Media.MIME_TYPE + " IN (");
@@ -258,12 +328,15 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             // setting a limit at all), but it works because this specific ContentProvider is backed by
             // an SQLite DB and forwards parameters to it without doing any parsing / validation.
             try {
+
+                String dir = mOrderByAsc ? "ASC" : "DESC";
+
                 Cursor media = resolver.query(
                         MediaStore.Files.getContentUri("external"),
                         PROJECTION,
                         selection.toString(),
                         selectionArgs.toArray(new String[selectionArgs.size()]),
-                        Images.Media.DATE_TAKEN + " DESC, " + Images.Media.DATE_MODIFIED + " DESC LIMIT " +
+                        Images.Media.DATE_TAKEN + " " + dir + ", " + Images.Media.DATE_MODIFIED + " " + dir + " LIMIT " +
                                 (mFirst + 1)); // set LIMIT to first + 1 so that we know how to populate page_info
                 if (media == null) {
                     mPromise.reject(ERROR_UNABLE_TO_LOAD, "Could not get media");
