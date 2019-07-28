@@ -68,6 +68,22 @@ export type GetPhotosParams = {
 	 * Filter by mimetype (e.g. image/jpeg).
 	 */
 	mimeTypes?: Array<string>,
+
+	/**
+	 * is Sort Asc?.
+	 */
+	orderByAsc?: boolean,
+
+	/**
+	 * Call to Begin Date.
+	 */
+	beginCreated?: number,
+
+	/**
+	 * Call to End Date.
+	 */
+	endCreated?: number,
+
 };
 
 export type PhotoIdentifier = {
@@ -107,7 +123,7 @@ export type PhotoIdentifiersPage = {
  *
  * See https://facebook.github.io/react-native/docs/cameraroll.html
  */
-class MediaLibrary {
+class PhotoLibrary {
 	static GroupTypesOptions = GROUP_TYPES_OPTIONS;
 	static AssetTypeOptions = ASSET_TYPE_OPTIONS;
 
@@ -167,6 +183,16 @@ class MediaLibrary {
 		if (!params.groupTypes) {
 			params.groupTypes = GROUP_TYPES_OPTIONS.All;
 		}
+		if (!params.orderByAsc) {
+			params.orderByAsc = false;
+		}
+		if (!params.beginCreated) {
+			params.beginCreated = 0;
+		}
+		if (!params.endCreated) {
+			params.endCreated = 0;
+		}
+
 		if (arguments.length > 1) {
 			console.warn(
 				'CameraRoll.getPhotos(tag, success, error) is deprecated.  Use the returned Promise instead',
@@ -179,4 +205,4 @@ class MediaLibrary {
 	}
 }
 
-module.exports = MediaLibrary;
+module.exports = PhotoLibrary;
