@@ -1,6 +1,11 @@
 # `react-native-photo-library`
 
-![Supports Android and iOS](https://img.shields.io/badge/platforms-android%20|%20ios-lightgrey.svg) ![MIT License](https://img.shields.io/npm/l/react-native-photo-library.svg)
+![platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS-brightgreen.svg?style=flat-square&colorB=191A17)
+[![npm](https://img.shields.io/npm/v/react-native-photo-library.svg?style=flat-square)](https://www.npmjs.com/package/react-native-photo-library)
+[![npm](https://img.shields.io/npm/dm/react-native-photo-library.svg?style=flat-square&colorB=007ec6)](https://www.npmjs.com/package/react-native-photo-library)
+[![github issues](https://img.shields.io/github/issues/trabricks/react-native-photo-library.svg?style=flat-square)](https://github.com/trabricks/react-native-photo-library/issues)
+[![github closed issues](https://img.shields.io/github/issues-closed/trabricks/react-native-photo-library.svg?style=flat-square&colorB=44cc11)](https://github.com/trabricks/react-native-photo-library/issues?q=is%3Aissue+is%3Aclosed)
+[![Issue Stats](https://img.shields.io/issuestats/i/github/trabricks/react-native-photo-library.svg?style=flat-square&colorB=44cc11)](http://github.com/trabricks/react-native-photo-library/issues)
 
 Copy to Cameraroll And Date between added.
 
