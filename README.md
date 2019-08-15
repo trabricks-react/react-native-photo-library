@@ -2,6 +2,8 @@
 
 ![Supports Android and iOS](https://img.shields.io/badge/platforms-android%20|%20ios-lightgrey.svg) ![MIT License](https://img.shields.io/npm/l/react-native-photo-library.svg)
 
+Copy to Cameraroll And Date between added.
+
 ## Getting started
 
 `$ npm install react-native-photo-library --save`
