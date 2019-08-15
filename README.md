@@ -31,6 +31,13 @@ to:
 import CameraRoll from "react-native-photo-library";
 ```
 
+
+###Compared to @react-native-community/react-native-cameraroll
+react-native-cameraroll functionality is similar, but there are several major differencies:
+- Start and end can be set by date.
+- You can change the alignment.
+ 
+
 ## Usage
 
 `CameraRoll` provides access to the local camera roll or photo library.
