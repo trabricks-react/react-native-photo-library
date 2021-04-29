@@ -1,8 +1,8 @@
 
 {
   "name": "react-native-photo-library",
-  "version": "1.0.4",
-  "description": "",
+  "version": "1.0.5",
+  "description": "react-native-photo-library",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,8 +14,8 @@
     "camera",
     "photo gallery"
   ],
-  "homepage": "https://github.com/retizen/react-native-photo-library#readme",
-  "author": "Retizen LTD",
+  "homepage": "https://github.com/trabricks-react/react-native-photo-library#readme",
+  "author": "Actbase LLC",
   "license": "MIT",
   "peerDependencies": {
     "react-native": "*"
